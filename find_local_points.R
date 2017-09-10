@@ -2,31 +2,53 @@ library(ggplot2)
 
 #Code for finding local maximum, left side local minimum, right side local maximum for given part of whole time series
 
+setwd("C:/Users/support/Dropbox/R programmin/dsMuch")
+
+
+######################
+##  Real data 
+#####################
+#realdata <- read.csv2('dbBup.CSV',sep=',', stringsAsFactors = F)
+#saveRDS(realdata,'realdata.RDS')
+
+realdata <- readRDS('realdata.RDS')
+
+## select columns
+
+x <- realdata[,c('recordTimeEDT','eurusd_bid','eurusd_ask'),]
+x$eurusd_bid <- as.numeric(x$eurusd_bid)
+x$eurusd_ask <- as.numeric(x$eurusd_ask)
+
+x$rw <- x$eurusd_bid/x$eurusd_ask
+x$pts <- NA                                     ## Flag for local minimum/maximum
+x$value <- NA                                   ## Saving local min/max values in additional column (easier) (mostly for plotting)
+x$index <- 1:nrow(x)    
 
 ### parameters:
-  
 
-  rw.steps <- 10000  ## Steps taken by random walker
-  n <- 300           ## Width interval (number of observations in one range)
+  n <- 1000           ## Width interval (number of observations in one range)
   
 ## Comment: Width of interval should the a function in future
 
   
-  
-  
-### Random Walk simulation 
-  rw  <- cumsum(sample(c(-1,1),rw.steps, TRUE))
-  plot(rw,type='l')
-
-
-### Data frame: random walk values
-
-  x <- as.data.frame(rw, stringsAsFactors = F)    ## random walk values
-  x$pts <- NA                                     ## Flag for local minimum/maximum
-  x$value <- NA                                   ## Saving local min/max values in additional column (easier) (mostly for plotting)
-  x$index <- 1:nrow(x)                            ## index of steps
-  
-
+#####################
+## FAKE DATA  
+#   
+# ### Random Walk simulation 
+#  n <- 400           ## Width interval (number of observations in one range)  
+#  rw.steps <- 10000  ## Steps taken by random walker
+#   rw  <- cumsum(sample(c(-1,1),rw.steps, TRUE))
+#   plot(rw,type='l')
+# 
+# 
+# ### Data frame: random walk values
+# 
+#   x <- as.data.frame(rw, stringsAsFactors = F)    ## random walk values
+#   x$pts <- NA                                     ## Flag for local minimum/maximum
+#   x$value <- NA                                   ## Saving local min/max values in additional column (easier) (mostly for plotting)
+#   x$index <- 1:nrow(x)                            ## index of steps
+#   
+#########################
   
   
   
@@ -80,6 +102,66 @@ library(ggplot2)
     scale_color_discrete(name = 'Point',breaks=c("left.local.min","local.max","right.local.min")) +
     xlab("Index") +
     ylab("Random Walk value") 
+  
+  
+  
+  
+  
+  
+  
+  
+####################################
+#     approximation
+####################################  
+  
+  
+  
+  
+apprx <-   x[is.na(x$pts) == F,]
+apprx$index <- 1:nrow(apprx)
+  
+  ggplot(data = apprx, aes(x=seq(1,nrow(apprx)), y= rw, group=1))+
+    geom_line(stat='identity')+
+    theme(panel.background = element_rect(fill = 'white', colour = 'black'))+
+    scale_color_discrete(name = 'Point',breaks=c("left.local.min","local.max","right.local.min")) +
+    xlab("Index") +
+    ylab("Random Walk value") 
+  
+  
+  
+  
+  
+####################################
+#     Slope
+####################################   
+#   
+#   
+#   ind <- apprx[which(apprx$rw == max(apprx$rw)),'index']
+#   vll <- apprx[which(apprx$rw == max(apprx$rw)),'value']
+#   
+#   
+# ### found high point
+# ### go from this point to the left
+#   
+#   gr <- 1
+#   gr.list <- list()
+#   for (gr in 1:(ind-1))
+#   {
+#     ind2 <- apprx[gr,c('index')]
+#     vll2 <- apprx[gr,c('value')]
+#     
+#    gr.list[gr] <- (vll-vll2)/ (ind-ind2)  
+#     
+#   }  
+# 
+# ### higher sloper -  big difference
+#   
+#   
+#   plot(unlist(gr.list))
+#   
+  
+  
+  
   
   
   
