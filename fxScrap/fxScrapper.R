@@ -38,10 +38,22 @@ while(scrapMe){
   
   currTime <- Sys.time() %>% as.POSIXlt()
   if(abs(currTime$hour - ignitionTime$hour) > 0){
-    dbDisconnect(connectionObject)
-    connectionObject <- connectMeToDB()
-    ignitionTime <- Sys.time() %>% as.POSIXlt()
-    print("connection refreshed")
+    tryCatch(
+      function(){
+        dbDisconnect(connectionObject);
+        connectionObject <<- connectMeToDB();
+        ignitionTime <<- Sys.time() %>% as.POSIXlt()
+        print("connection refreshed")
+      }
+      ,
+      error = function(){
+        print("Connection problem - trying to reconnect");
+        Sys.sleep(60)
+        
+      }
+      
+    )
+
   }
   
   rowId <- rowId + 1

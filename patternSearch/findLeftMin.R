@@ -1,0 +1,5 @@
+findLeftMin <- function(localTimeWindow, maxIdx){
+  
+  
+  
+}

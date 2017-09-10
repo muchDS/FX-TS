@@ -7,7 +7,7 @@ source("stockActiveTimesSelector.R")
 connObj <- connectMeToDB()
 
 # ściągam tabelke z netu
-results <- dbGetQuery(connObj, "SELECT * FROM fxtimeseriestable") %>%
+results <- dbGetQuery(connObj, "SELECT * FROM fxtimeseriestable1") %>%
            arrange(rowid)
 # resultsBUp <- dbGetQuery(connObj, "SELECT * FROM fxtimeseriestable") 
 # kasuję puste wiersze (scrapowane gdy giełda nie działała jeszcze)
@@ -27,6 +27,7 @@ if("finalfxtimeseriestable" %in% dbListTables(connObj)){
   }
 
   dbGetQuery(connObj, "DELETE FROM fxtimeseriestable")
+  dbGetQuery(connObj, "DELETE FROM fxtimeseriestable1")
   print("done")
   
 } else {

@@ -48,6 +48,7 @@ names(myData) <- c(names(myDataUniBit), "tsval", "tstime")
 
 myData$tstime <- myData$tstime %>% as.POSIXlt()
 
+return(myData)
 
 # zakładam okienko 5min 
 # przeszukuję przedziały od ostatniej obserwacji
